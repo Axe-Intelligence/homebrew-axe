@@ -40,7 +40,7 @@ jobs:
           elif [ -n "${{ inputs.cask }}" ]; then
             echo "casks=${{ inputs.cask }}" >> "$GITHUB_OUTPUT"
           else
-            CASKS=$(ls Casks/*.rb | xargs -n1 basename | sed 's/\.rb$//' | tr '\n' ' ')
+            CASKS=$(find Casks -name '*.rb' -print0 | xargs -0 -n1 basename | sed 's/\.rb$//' | tr '\n' ' ')
             echo "casks=$CASKS" >> "$GITHUB_OUTPUT"
           fi
 

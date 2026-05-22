@@ -12,6 +12,8 @@ cask "axe-beam" do
     strategy :github_latest
   end
 
+  depends_on :macos
+
   app "AXEBeam.app"
 
   # Strip Gatekeeper quarantine — AXE internal tool
