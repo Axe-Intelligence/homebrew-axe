@@ -1,8 +1,8 @@
 class AxeMemoryKit < Formula
   desc "CLI to save and recall context across Claude Code sessions via AXE memory"
   homepage "https://github.com/memjar/axe-mumJL3"
-  head "https://github.com/memjar/axe-mumJL3.git", branch: "main"
   license "MIT"
+  head "https://github.com/memjar/axe-mumJL3.git", branch: "main"
 
   depends_on "python@3.12"
 

@@ -1,8 +1,8 @@
 class AxeMcp < Formula
   desc "MCP server that registers AXE fleet tools with Claude Code"
   homepage "https://github.com/memjar/axe-mumJL3"
-  head "https://github.com/memjar/axe-mumJL3.git", branch: "main"
   license "MIT"
+  head "https://github.com/memjar/axe-mumJL3.git", branch: "main"
 
   depends_on "python@3.12"
 
