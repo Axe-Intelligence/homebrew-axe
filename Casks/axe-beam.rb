@@ -12,7 +12,7 @@ cask "axe-beam" do
     strategy :github_latest
   end
 
-  depends_on :macos
+  depends_on macos: :ventura
 
   app "AXEBeam.app"
 
