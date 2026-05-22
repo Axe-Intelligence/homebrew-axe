@@ -1,12 +1,12 @@
 class AxeMcp < Formula
   include Language::Python::Virtualenv
 
-  desc "AXE MCP server — registers AXE fleet tools with Claude Code"
+  desc "MCP server that registers AXE fleet tools with Claude Code"
   homepage "https://github.com/memjar/axe-mumJL3"
   url "https://github.com/memjar/axe-mumJL3/archive/refs/tags/mcp-v1.0.0.tar.gz"
+  version "1.0.0"
   sha256 :no_check
   license "MIT"
-  version "1.0.0"
 
   depends_on "python@3.12"
 
@@ -25,7 +25,7 @@ class AxeMcp < Formula
   end
 
   def post_install
-    settings = Pathname.new(ENV["HOME"]) / ".claude/settings.json"
+    settings = Pathname.new(Dir.home) / ".claude/settings.json"
     return unless settings.exist?
 
     require "json"
@@ -36,7 +36,7 @@ class AxeMcp < Formula
       "args"    => [],
       "env"     => {
         "AXE_AGENT_NAME" => ENV.fetch("AXE_AGENT_NAME", "local"),
-        "HOME"           => ENV["HOME"],
+        "HOME"           => Dir.home,
         "PATH"           => "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin",
       },
     }

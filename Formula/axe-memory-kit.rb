@@ -2,9 +2,9 @@ class AxeMemoryKit < Formula
   desc "AXE memory CLI — save and recall context across Claude Code sessions"
   homepage "https://github.com/memjar/axe-mumJL3"
   url "https://github.com/memjar/axe-mumJL3/archive/refs/tags/memory-kit-v1.0.0.tar.gz"
+  version "1.0.0"
   sha256 :no_check
   license "MIT"
-  version "1.0.0"
 
   depends_on "python@3.12"
 
@@ -27,7 +27,7 @@ class AxeMemoryKit < Formula
 
   def post_install
     # Register SessionStart hook in ~/.claude/settings.json
-    settings = Pathname.new(ENV["HOME"]) / ".claude/settings.json"
+    settings = Pathname.new(Dir.home) / ".claude/settings.json"
     hook_cmd = "#{Formula["python@3.12"].opt_bin}/python3 #{libexec}/hooks/session_start_memory.py"
 
     if settings.exist?
