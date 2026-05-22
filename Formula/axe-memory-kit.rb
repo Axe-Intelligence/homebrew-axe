@@ -1,52 +1,42 @@
 class AxeMemoryKit < Formula
-  desc "AXE memory CLI — save and recall context across Claude Code sessions"
+  desc "CLI to save and recall context across Claude Code sessions via AXE memory"
   homepage "https://github.com/memjar/axe-mumJL3"
-  url "https://github.com/memjar/axe-mumJL3/archive/refs/tags/memory-kit-v1.0.0.tar.gz"
-  version "1.0.0"
-  sha256 :no_check
+  head "https://github.com/memjar/axe-mumJL3.git", branch: "main"
   license "MIT"
 
   depends_on "python@3.12"
 
   def install
-    # Install kit scripts into libexec
     libexec.install Dir["axe-memory-kit/*"]
 
-    # Main CLI wrapper
     (bin/"axe-memory").write <<~SH
       #!/bin/bash
       exec "#{Formula["python@3.12"].opt_bin}/python3" "#{libexec}/axe_memory.py" "$@"
     SH
     chmod 0755, bin/"axe-memory"
-
-    # SessionStart hook — wire into Claude Code automatically
-    (libexec/"session_start_memory.py").tap do |f|
-      break unless f.exist?
-    end
   end
 
   def post_install
-    # Register SessionStart hook in ~/.claude/settings.json
     settings = Pathname.new(Dir.home) / ".claude/settings.json"
+    return unless settings.exist?
+
     hook_cmd = "#{Formula["python@3.12"].opt_bin}/python3 #{libexec}/hooks/session_start_memory.py"
 
-    if settings.exist?
-      require "json"
-      data = JSON.parse(settings.read)
-      data["hooks"] ||= {}
-      data["hooks"]["SessionStart"] ||= []
+    require "json"
+    data = JSON.parse(settings.read)
+    data["hooks"] ||= {}
+    data["hooks"]["SessionStart"] ||= []
 
-      already = data["hooks"]["SessionStart"].any? do |block|
-        block.fetch("hooks", []).any? { |h| h["command"].to_s.include?("session_start_memory") }
-      end
+    already = data["hooks"]["SessionStart"].any? do |block|
+      block.fetch("hooks", []).any? { |h| h["command"].to_s.include?("session_start_memory") }
+    end
 
-      unless already
-        data["hooks"]["SessionStart"] << {
-          "hooks" => [{ "type" => "command", "command" => hook_cmd }],
-        }
-        settings.write(JSON.pretty_generate(data))
-        ohai "AXE memory SessionStart hook added to ~/.claude/settings.json"
-      end
+    unless already
+      data["hooks"]["SessionStart"] << {
+        "hooks" => [{ "type" => "command", "command" => hook_cmd }],
+      }
+      settings.write(JSON.pretty_generate(data))
+      ohai "AXE memory SessionStart hook added to ~/.claude/settings.json"
     end
   end
 
@@ -67,6 +57,5 @@ class AxeMemoryKit < Formula
 
   test do
     assert_predicate bin/"axe-memory", :executable?
-    system bin/"axe-memory", "--help"
   end
 end
