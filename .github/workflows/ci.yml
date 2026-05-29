@@ -35,6 +35,9 @@ jobs:
       - name: brew audit (changed casks only)
         run: |
           # Find casks changed vs main; on push to main, audit all casks.
+          # Audit is offline (no --online): upstream release artifacts live in a
+          # private repo, so anonymous CI cannot fetch them. Style + syntax +
+          # structural checks still run.
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             BASE="origin/${{ github.base_ref }}"
             git fetch origin "${{ github.base_ref }}" --depth=1
@@ -54,8 +57,8 @@ jobs:
             # On main pushes, no --new (everything is already merged).
             if [ "${{ github.event_name }}" = "pull_request" ] \
                && git diff --name-status "$BASE"...HEAD -- "$f" 2>/dev/null | grep -q '^A'; then
-              brew audit --cask --online --new "$name"
+              brew audit --cask --new "$name"
             else
-              brew audit --cask --online "$name"
+              brew audit --cask "$name"
             fi
           done
